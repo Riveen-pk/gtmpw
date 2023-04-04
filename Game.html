@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script>
+      function compareWords() {
+        // Get the user's input
+        var word1 = document.getElementById("query1").value;
+        var word2 = document.getElementById("query2").value;
+
+        // Make a request to the custom search API and get the search results
+        // This code assumes you have the appropriate credentials to access the API
+        var url = "https://customsearch.googleapis.com/customsearch/v1?q=" + word1 + "+" + word2 + "&key=AIzaSyCObMEKPXhDgY7Ix_L_soC1GFldMXmhRTw&cx=716c8e42645354a18&num=2";
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            var data = JSON.parse(this.responseText);
+            var results1 = data.items[0].title;
+            var results2 = data.items[1].title;
+
+            // Compare the number of search results and display the winner
+            if (results1 > results2) {
+              document.getElementById("result").innerHTML = word1 + " wins!";
+            } else if (results2 > results1) {
+              document.getElementById("result").innerHTML = word2 + " wins!";
+            } else {
+              document.getElementById("result").innerHTML = "It's a tie!";
+            }
+          }
+        };
+        xhttp.open("GET", url, true);
+        xhttp.send();
+      }
+    </script>
+
+    <script>
+      // Initialize frequency object
+      var frequencies = {
+        a: 0,
+        b: 0,
+      };
+
+      function buttonClicked(button) {
+        frequencies[button]++;
+      }
+
+      function findMaxFrequency() {
+        var maxButton;
+        var maxFrequency = -1;
+        var isTie = false;
+
+        // Iterate through frequencies object and find the button with the highest frequency
+        for (var button in frequencies) {
+          if (frequencies[button] > maxFrequency) {
+            maxFrequency = frequencies[button];
+            maxButton = button;
+            isTie = false;
+          } else if (frequencies[button] === maxFrequency) {
+            isTie = true;
+          }
+        }
+
+        // Display the result
+        var resultElement = document.getElementById("total");
+        if (isTie) {
+          resultElement.textContent = "It's a tie!";
+        } else {
+          resultElement.textContent = "Player " + maxButton.toUpperCase() + " wins with " + maxFrequency + " points!";
+        }
+      }
+    </script>
+
+    <style>
+      .center {
+        display: flex;
+        justify-content: center;
+      }
+    </style>
+  </head>
+  <body>
+    <form align="center">
+      <label for="query1">Player A:</label>
+      <input type="text" id="query1" name="query1" style="color:black;"/><br /><br />
+      <label for="query2">Player B:</label>
+      <input type="text" id="query2" name="query2" style="color:black;" /><br /><br />
+      <input type="button" value="Compare" onclick="compareWords()" style="color:black;"/>
+    </form>
+    <b><p style="font-size:18px" align="center" id="result"></p></b>
+
+    <br />
+    <hr />
+    <h3 align="center">Score Calculator</h3>
+    <p align="center">
+      Click your own button when you win. At the end, click 🏆🏆🏆 to get the
+      winner.
+    </p>
+    <br />
+
+    <table align="center" width="50%">
+      <tr>
+        <td style="height:70%" align="left">
+          <button onclick="buttonClicked('a')">
+            <p style="font-size: 24px;">🅰</p>
+          </button>
+        </td>
+
+        <td style="height:70%" align="center">
+          <button onclick="buttonClicked('b')">
+            <p style="font-size: 24px;">🅱️</p>
+          </button>
+        </td>
+        <td style="height:70%" align="right">
+          <button onclick="findMaxFrequency()">
+            <p style="font-size: 24px;">🏆🏆🏆</p>
+          </button>
+        </td>
+      </tr>
+    </table>
+    <br />
+    <table width="100%">
+      <tr>
+        <td align="center"><p id="total"></p></td>
+      </tr>
+    </table>
+    <br />
+    <hr />
+    <p style="font-size: 10px;" align="center">
+      Game idea by Sasindu S. Suriyarachchi. Brought to you by Riveen with
+      GPT-4. 
+    </p>
+  </body>
+</html>
